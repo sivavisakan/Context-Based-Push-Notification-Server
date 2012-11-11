@@ -1,27 +1,24 @@
 package edu.cmu;
 import edu.cmu.oauth.MyOauthServer;
-import edu.cmu.protect.MyProtectedApplication;
-import edu.cmu.proxyApplication.MyProxyApplication;
-
-
+import edu.cmu.protect.push.PushApplication;
+import edu.cmu.safecity.SafeCityApplication;
 import org.restlet.*;
-import org.restlet.data.Protocol;
-import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
-
+/**
+ * 
+ * @author Siva
+ *
+ */
 public class TestApplication extends Application {  
-
 	@Override
 	public Restlet createInboundRoot() {
-		
 		if(getContext() == null){
 			setContext(new Context());
 		}
 		Router router = new Router(getContext());
-		
 		router.attach("/oauth", new MyOauthServer());
-		router.attach("/proxy", new MyProxyApplication());
-		router.attach("/protect", new MyProtectedApplication());
+		router.attach("/proxy", new SafeCityApplication());
+		router.attach("/protect", new PushApplication());
 //		Redirector redirector = new Redirector(getContext(),"/samplerestlet/proxy");
 //		//	router.attach("/samplerestlet", Tester.class);
 //			router.attachDefault(redirector);

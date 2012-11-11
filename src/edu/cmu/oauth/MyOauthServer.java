@@ -1,6 +1,4 @@
 package edu.cmu.oauth;
-
-
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -12,22 +10,16 @@ import org.restlet.ext.oauth.ClientStore;
 import org.restlet.ext.oauth.ClientStoreFactory;
 import org.restlet.ext.oauth.HttpOAuthHelper;
 import org.restlet.ext.oauth.ValidationServerResource;
-
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
 import org.restlet.security.ChallengeAuthenticator;
 import edu.cmu.CommonUtilities;
-
 /**
  * 
- */
-
-/**
- * @author Martin Svensson
+ * @author Siva
  *
  */
 public class MyOauthServer extends Application {
-
   @Override
   public synchronized Restlet createInboundRoot() { 
 	  if(getContext() == null){
@@ -35,35 +27,25 @@ public class MyOauthServer extends Application {
 		}
       //Engine.setLogLevel(Level.FINE);
       Router root = new Router(getContext());
-		
       //Challenge Authenticator
-      ChallengeAuthenticator au = new ChallengeAuthenticator(getContext(),
-              ChallengeScheme.HTTP_BASIC, "OAuth Test Server");
+      ChallengeAuthenticator au = new ChallengeAuthenticator(getContext(),ChallengeScheme.HTTP_BASIC, "OAuth Test Server");
       au.setVerifier(new MyVerifier());
       au.setNext(AuthorizationServerResource.class);
-      //http://localhost:9090/oauth/authorize
       root.attach("/authorize", au);
-            
       root.attach("/access_token", AccessTokenServerResource.class);
       root.attach("/validate",ValidationServerResource.class);
-      root.attach(HttpOAuthHelper.getAuthPage(getContext()),
-              AuthPageServerResource.class);
-      
+      root.attach(HttpOAuthHelper.getAuthPage(getContext()),AuthPageServerResource.class);
       //Set Template for AuthPage:
       HttpOAuthHelper.setAuthPageTemplate("authorize.html", getContext());
       //Dont ask for approval if previously approved
       HttpOAuthHelper.setAuthSkipApproved(true, getContext());
-      
       //Attach Image Directory for our login.html page
       final Directory imgs = new Directory(getContext(), "clap:///img/");
       root.attach("/img", imgs);
       getContext().getLogger().info("done");
-      
       //Finally create a test client:
       ClientStore clientStore = ClientStoreFactory.getInstance();
       clientStore.createClient("1234567890", "secret1", CommonUtilities.SERVER_URL_BASE+"/proxy");
-      
       return root;
   }
-      
 }

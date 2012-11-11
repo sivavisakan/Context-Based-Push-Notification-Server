@@ -9,7 +9,7 @@ import org.restlet.resource.ServerResource;
 
 /**
  * Default resource that returns the index page for this application
- * @author Martin Svensson
+ * @author Siva
  *
  */
 public class Login extends ServerResource {
@@ -24,7 +24,6 @@ public class Login extends ServerResource {
       toRet = new StringRepresentation(r.getText(), MediaType.TEXT_HTML);
     else
       this.getResponse().setStatus(cr.getStatus());
-    
     cr.release();
     return toRet;
 	}

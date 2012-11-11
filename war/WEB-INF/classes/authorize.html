@@ -2,17 +2,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<link rel="stylesheet" href="resources/style.css" type="text/css" media="screen"
+<link rel="stylesheet" href="css/bootstrap/css/bootstrap.css" type="text/css" media="screen"
 	charset="utf-8">
 <title>OAuth2 Authorization Server</title>
 </head>
 <body>
-	<div id="container">
+<br/>
+	<div id="container" class="container well">
 		<div id="header">
-			<h2>OAuth authorization page</h2>
+			<h3>Ericsson OAuth page</h3>
 			<section id="intro">
-				<h2>Application requesting scope</h2>
-				<p>Client ClientId = ${clientId} CB = ${clientDescription} wants to get access to your information.</p>
+				<h4>SafeCity is requesting scope</h4>
+				<p><!-- Client ClientId = ${clientId} CB =  -->${clientDescription} wants to get access to your information.</p>
 			</section>
 		</div>
 		<aside>
@@ -30,12 +31,12 @@
 			</#list>
 		</#if>
 		<br/>
-		<input type="submit" name="action" value="Reject"/>
-		<input type="submit" name="action" value="Accept" />
+		<input type="submit" name="action" value="Reject" class="btn btn-primary"/>
+		<input type="submit" name="action" value="Accept" class="btn btn-primary"/>
 		</form>
 		</aside>
 		<footer>
-			<p class="copyright">Copyright &copy; 2010 Ericsson Inc. All rights reserved.</p>
+			<p class="copyright">Copyright &copy; 2012 SafeCity Inc. All rights reserved.</p>
 		</footer>
 	</div>
 </body>

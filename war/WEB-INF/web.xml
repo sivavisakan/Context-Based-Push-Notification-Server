@@ -24,7 +24,7 @@
 		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
 		<init-param>
 			<param-name>org.restlet.application</param-name>
-			<param-value>edu.cmu.proxyApplication.MyProxyApplication</param-value>
+			<param-value>edu.cmu.safecity.SafeCityApplication</param-value>
 		</init-param>
 			<init-param>
 			<param-name>org.restlet.clients</param-name>
@@ -36,11 +36,11 @@
 		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>protect</servlet-name>
+		<servlet-name>push</servlet-name>
 		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
 		<init-param>
 			<param-name>org.restlet.application</param-name>
-			<param-value>edu.cmu.protect.MyProtectedApplication</param-value>
+			<param-value>edu.cmu.protect.push.PushApplication</param-value>
 		</init-param>
 			<init-param>
 			<param-name>org.restlet.clients</param-name>
@@ -48,9 +48,33 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>protect</servlet-name>
+		<servlet-name>push</servlet-name>
 		<url-pattern>/protect/*</url-pattern>
 	</servlet-mapping>
+	
+	
+	
+	
+	<servlet>
+		<servlet-name>profile</servlet-name>
+		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+		<init-param>
+			<param-name>org.restlet.application</param-name>
+			<param-value>edu.cmu.protect.profile.ProfileApplication</param-value>
+		</init-param>
+			<init-param>
+			<param-name>org.restlet.clients</param-name>
+			<param-value>HTTP HTTPS CLAP RIAP</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>profile</servlet-name>
+		<url-pattern>/protect1/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	
 	
 	 <servlet>
         <servlet-name>sign</servlet-name>
