@@ -16,6 +16,7 @@ public class ProfileResource extends ServerResource{
 	private static final Logger log = Logger.getLogger(ProfileResource.class.getName());
 	public String BOB_DATA  = "{email:'bob@cmu.edu',phone:'4123223232',locaion:'Mountain View'}";
 	public String SIVA_DATA = "{email:'siva@cmu.edu',phone:'4129444959',locaion:'Palo Alto'}";
+	public String SUNG_DATA = "{email:'sung@cmu.edu',phone:'4129444959',locaion:'Palo Alto'}";
     @Get public Representation getUserStatus() throws ResourceException{
         String id = getClientInfo().getUser().getIdentifier();
         if(id.equals("siva")){
@@ -23,6 +24,9 @@ public class ProfileResource extends ServerResource{
         }
         if(id.equals("bob")){
         	return new StringRepresentation(BOB_DATA);
+        }
+        if(id.equals("sung")){
+        	return new StringRepresentation(SUNG_DATA);
         }
         return null;
     }

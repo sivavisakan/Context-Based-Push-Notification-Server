@@ -17,6 +17,10 @@ public class MyVerifier extends SecretVerifier {
                 secret)){
         	 return RESULT_VALID;
         }
+        else if("sung".equals(identifier) && compare("123".toCharArray(),
+        		secret)){
+        	return RESULT_VALID;
+        }
         else
         	return RESULT_INVALID;
     }

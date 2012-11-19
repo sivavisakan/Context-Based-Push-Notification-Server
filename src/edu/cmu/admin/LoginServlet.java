@@ -62,6 +62,10 @@ public class LoginServlet extends HttpServlet {
 				req.getRequestDispatcher("/alert.jsp").forward(req, resp);
 				return;
 			}
+			//Checking if the form is for showing the map
+			if(req.getParameter("map") != null){
+				req.getRequestDispatcher("/map.jsp").forward(req, resp);
+			}
 			//Checks if the form is for sign-in
 			if(req.getParameter("signin") != null){
 				String mail = req.getParameter("email");

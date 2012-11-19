@@ -31,6 +31,16 @@ public class LocalResource extends ServerResource{
     OAuthUser u = (OAuthUser) getRequest().getClientInfo().getUser();
     String id = getRequest().getClientInfo().getUser().getIdentifier();
     String token = u.getAccessToken();
+    
+    Reference meRef1 = new Reference(CommonUtilities.SERVER_URL_BASE+"/protect2/sms");
+	meRef1.addQueryParameter(OAuthServerResource.OAUTH_TOKEN, token);
+	ClientResource meResource1 = new ClientResource(getContext(),meRef1);
+	Representation meRepr1 = meResource1.get();
+	String res1 = meRepr1.getText();
+    
+    
+    
+    
     Reference meRef = new Reference(CommonUtilities.SERVER_URL_BASE+"/protect/push");
     meRef.addQueryParameter(OAuthServerResource.OAUTH_TOKEN, token);
     String status = this.getQuery().getFirstValue("status");

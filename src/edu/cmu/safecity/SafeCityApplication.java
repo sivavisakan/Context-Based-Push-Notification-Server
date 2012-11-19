@@ -6,12 +6,8 @@ import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.ext.oauth.OAuthParameters;
 import org.restlet.ext.oauth.OAuthProxy;
-import org.restlet.ext.oauth.internal.OauthProxyV2;
-import org.restlet.ext.oauth.internal.Scopes;
-import org.restlet.resource.ServerResource;
 import org.restlet.routing.Router;
 import org.restlet.security.Role;
-
 import edu.cmu.CommonUtilities;
 /**
  * 
@@ -19,20 +15,20 @@ import edu.cmu.CommonUtilities;
  *
  */
 public class SafeCityApplication extends Application {
-  public static final String GOOGLE_OAUTH_BASE = "https://accounts.google.com/o/oauth2/";
-  public static final String FACEBOOK_OAUTH = "https://graph.facebook.com/oauth/";
   @Override
   public synchronized Restlet createInboundRoot() {
     Router router = new Router(getContext());
     //Define a proxy and resource that access your "local protected resource";
-    List <Role> roles = new ArrayList <Role> ();
+    List <Role> roles = new ArrayList <Role>();
     roles.add(new Role("push", null));
     roles.add(new Role("profile", null));
+    roles.add(new Role("sms", null));
     OAuthParameters params = new OAuthParameters("1234567890","secret1", CommonUtilities.SERVER_URL_BASE+"/oauth/",roles); // similar to give acccess to Images, videos ;  Scopes.toRoles("status")
     OAuthProxy local = new OAuthProxy(params,getContext());
     local.setNext(LocalResource.class);
     router.attach("/local",local);
     router.attach("/store",DataStore.class);
+    router.attach("/alert",DisseminateAlert.class);
     return router;
   } 
 }
