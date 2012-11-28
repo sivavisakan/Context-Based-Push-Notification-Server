@@ -27,6 +27,8 @@ public class SafeCityApplication extends Application {
     OAuthProxy local = new OAuthProxy(params,getContext());
     local.setNext(LocalResource.class);
     router.attach("/local",local);
+    router.attach("/location",CurrentLocation.class);
+    router.attach("/check",CheckUser.class);
     router.attach("/store",DataStore.class);
     router.attach("/alert",DisseminateAlert.class);
     return router;

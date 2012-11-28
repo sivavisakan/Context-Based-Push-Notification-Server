@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="org.json.JSONArray;" %>
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -13,7 +13,6 @@
 }
 </style>
 <script src="./js/jquery.js"></script>
-<script src="./css/bootstrap/js/bootstrap.js"></script>
 <script
 	src="http://maps.googleapis.com/maps/api/js?key=AIzaSyB-k6sdgzpXqzTGYPqSm3qWdZFpbvwf3JY&sensor=true"></script>
 </head>
@@ -24,7 +23,7 @@
 				<a class="btn btn-navbar" data-toggle="collapse"
 					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="#">Safe City</a>
+				</a> <a class="brand" href="#">Ericsson Disaster Management</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li class="active"><a href="#">Home</a></li>
@@ -54,25 +53,6 @@
 						<div class="well">
 						<label for="message"><strong>Alert Message</strong>  </label>
 						<textarea id="message" rows="2" cols="10" placeholder="Please enter the alert message "></textarea>
-						<div id="severity">
-							<div class="severity-row">
-								<label class="checkbox inline">
-								<input type="checkbox" id="warning"/>Warning
-								</label>
-								<label class="checkbox inline">
-								<input type="checkbox" id="minor"/>Minor
-								</label>
-							</div>
-							<div class="severity-row">
-								<label class="checkbox inline">
-								<input type="checkbox" id="medium"/>Medium
-								</label>
-								<label class="checkbox inline">
-								<input type="checkbox" id="major"/>Major
-								</label>
-							</div>
-						</div>
-						 
 							<!-- TODO: Make the below a button tag instead  -->
 						</div>
 						
@@ -98,37 +78,27 @@
 								</select>
 							<!-- </div> -->
 						</form>
-						
 						<!-- <div class="well"> -->
 							<!-- TODO: Make the below a button tag instead  -->
-							<form name="areaForm" id="areaForm" action="/proxy/alert" method="post">
 							<table>
+							<tr><td>
+							<input onclick="deleteOverlays();" type=button value="Clear Map"
+								class="btn btn-primary btn-danger"><br/></td></tr>
+						
+						<form name="areaForm" id="areaForm" action="/proxy/alert" method="post">
+							
 								<tr>
-									<td>
-										<input id="clear-map-btn" onclick="deleteOverlays();" type=button value="Clear Map" class="btn btn-primary btn-danger">
-									</td>
-									<td align="right">
-										<button class="btn btn-primary" id="dis-btn" type="submit" name="nextInfo">Disseminate Alert</button>
-									</td>
+									<!-- <td align="left"><button type="submit"
+											class="btn btn-primary btn-small" name="backAlert">Back</button></td> -->
+									<td align="right"><button type="submit"
+											class="btn btn-primary" name="nextInfo">Disseminate Alert</button></td>
 								</tr>
 							</table>
 						</form>
 						</div>
-						
-					
-						
-						
-						<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Modal header</h3>
-  </div>
-  <div class="modal-body">
-    <p>Message Success Sent !</p>
-  </div>
-  
-</div>
-						
+						<!-- TODO: Remove test divs -->
+						<div id="test"></div>
+						<div id="test_1"></div>
 					</div>
 					<div class="span8">
 						<div
@@ -143,20 +113,6 @@
 			</div>
 		</div>
 	</div>
-	
-	<div id="mapModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">Successful!</h3>
-		</div>
-		<div class="modal-body">
-			<p>Successfully disseminated an alert!</p>
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		</div>
-	</div>
-	
 	<script>
 		var map;
 		var geocoder; // = new google.maps.Geocoder();
@@ -183,18 +139,6 @@
 		var timeout;
 		var closePoly;
 
-		jQuery(document).ready(function($){
-			$("#dis-btn").on("click", function() {
-				$("#mapModal").modal('show');
-			});
-			$('#mapModal').on('shown', function(e) {
-			    var modal = $(this);
-			    modal.css('margin-top', (modal.outerHeight() / 2) * -1)
-			         .css('margin-left', (modal.outerWidth() / 2) * -1);
-			    return this;
-			});
-		});
-		
 		// Setup the map.
 		function initialize() {
 			var mapOptions = {
@@ -212,38 +156,6 @@
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"),
 					mapOptions); //keep
-			$.ajax
-		    ({
-		        type: "GET",
-		        //the url where you want to sent the userName and password to
-		        url: '/proxy/location',
-		        //json object to sent to the authentication url
-		        success: function (data) {
-		        	for(var i=0; i < data.length;i++){
-		        		debugger;
-		        		var myLatlng = new google.maps.LatLng(data[i].lat,data[i].lon);
-		        		 var pinColor = "ADDE63";
-		        		    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-		        		        new google.maps.Size(21, 34),
-		        		        new google.maps.Point(0,0),
-		        		        new google.maps.Point(10, 34));
-		        		    var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
-		        		        new google.maps.Size(40, 37),
-		        		        new google.maps.Point(0, 0),
-		        		        new google.maps.Point(12, 35));
-		        		var marker = new google.maps.Marker({
-		        			position: myLatlng, 
-		                    map: map,
-		                    icon: pinImage,
-		                    shadow: pinShadow,  
-	           		      	title:data[i].user
-		        		  });
-		        	}
-		        	 
-		        	console.log(data); 
-		        }
-		    });
-			
 
 			// Initializethe geocoder.
 			geocoder = new google.maps.Geocoder();
@@ -462,15 +374,13 @@
 		$(function() {
 			$('#areaForm').submit(
 					function() {
+						debugger
 						window.localStorage.setItem("polygonAreas", JSON
 								.stringify(serializePolygons()));
 						window.localStorage.setItem("circleAreas", JSON
 								.stringify(serializeCircles()));
-						var severity = '{warning:"'+$('#warning').is(':checked')+'",minor:"'+$('#minor').is(':checked')+'",medium:"'+$('#medium').is(':checked')+'",major:"'+$('#major').is(':checked')+'"}';
 						var pushMessage = $('#message').val();
-						console.log(severity);
-						
-						var json_sample = '{area: '+ window.localStorage.getItem("circleAreas")+',message:"'+pushMessage +'",severity:'+severity+'}';
+						var json_sample = '{area: '+ window.localStorage.getItem("circleAreas")+',message:"'+pushMessage +'"}';
 						console.log(json_sample);
 						$.ajax
 						    ({
@@ -518,6 +428,7 @@
 		function serializeCircles() {
 			serCircles = [];
 
+			debugger
 			if (circles != []) {
 				for ( var i = 0; i < circles.length; i++) {
 					serCircles.push(circles[i].getCenter().lat());
@@ -530,6 +441,7 @@
 
 		function restoreAreas() {
 			var polygonAreasJSON = localStorage.getItem('polygonAreas');
+			debugger;
 			if (polygonAreasJSON != null) {
 				polygonAreas = JSON.parse(polygonAreasJSON);
 				restorePolygons(polygonAreas);
@@ -543,6 +455,7 @@
 		}
 
 		function restorePolygons(polygonPaths) {
+			debugger
 			for ( var i = 0; i < polygonPaths.length; i++) {
 				onePolygonPathPoints = polygonPaths[i];
 				onePolygonPath = [];
@@ -569,6 +482,7 @@
 		}
 
 		function restoreCircles(circleAreas) {
+			debugger
 			for ( var i = 0; i < circleAreas.length; i += 3) {
 				oneCircleArea = circleAreas[i];
 				onePolygonPath = [];

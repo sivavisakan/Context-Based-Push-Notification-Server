@@ -1,17 +1,27 @@
 package edu.cmu.admin;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
+import edu.cmu.CommonUtilities;
 import edu.cmu.push.Datastore;
 public class LoginServlet extends HttpServlet {
 	/**
@@ -93,7 +103,7 @@ public class LoginServlet extends HttpServlet {
 				return;
 			}
 		}
-		catch(ServletException e){
+		catch(Exception e){
 			e.printStackTrace();
 		}
 	}

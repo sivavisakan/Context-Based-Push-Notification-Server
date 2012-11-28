@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +49,11 @@ public class DisseminateAlert extends ServerResource {
 			String postData =  getRequest().getEntity().getText();
 			JSONObject myjson = new JSONObject(postData);
 			String pushMessage = myjson.getString("message");
+			JSONObject severity = myjson.getJSONObject(CommonUtilities.SEV);
+			String warning = severity.getString(CommonUtilities.WARN);
+			String minor = severity.getString(CommonUtilities.MINOR);
+			String medium = severity.getString(CommonUtilities.MEDIUM);
+			String major = severity.getString(CommonUtilities.MAJOR);
 			/**
 			 * Here you were trying to call the push API by using Oauth token and GAE withURL function
 			 * Ask kristoffer how to do a post request with the oauth token and reach the protected resource
@@ -58,9 +64,9 @@ public class DisseminateAlert extends ServerResource {
 		    ClientResource meResourceProfile = new ClientResource(getContext(),meRefProfile);
 		    Representation meReprProfile = meResourceProfile.get();
 		    String profileData = meReprProfile.getText();
-//			String regIdTemp = "";
-//			String pl = "{regId:\""+regIdTemp+"\",pushMessage:\""+pushMessage+"\"}";
-//			queue.add(withUrl("/protect1/push").param().payload(pl).countdownMillis(3000));
+			String regIdTemp = "";
+			String pl = "{regId:\""+regIdTemp+"\",pushMessage:\""+pushMessage+"\"}";
+			//queue.add(withUrl("/protect1/push").param().payload(pl).countdownMillis(3000));
 			
 			JSONArray as = myjson.getJSONArray("area");
 			Double srcLat = as.getDouble(0);
@@ -73,15 +79,23 @@ public class DisseminateAlert extends ServerResource {
 			ArrayList<Key> parentKeys = new ArrayList<Key>();
 			while(userIterator.hasNext()){
 				Entity element = (Entity)userIterator.next();
+				String severityDst = (String)element.getProperty(CommonUtilities.SEV);
+				StringTokenizer severityTokens = new StringTokenizer(severityDst.substring(1, (severityDst.length()-1)), ",");
+				String warningDst = severityTokens.nextToken() ;
+				String minorDst =  severityTokens.nextToken();
+				String mediumDst =  severityTokens.nextToken();
+				String majorDst =  severityTokens.nextToken(); 
 				GeoPt point = (GeoPt) element.getProperty("point");
 				float dstLat = point.getLatitude();
 				float dstLon = point.getLongitude();
 				float dstRad = Float.parseFloat((String)element.getProperty("rad"));
 				Boolean flag = LocationUtils.isOverlapping(srcLat, srclon, srcRad, dstLat, dstLon, dstRad);
-				if(flag == true){
-					Object parentObject = element.getParent();
-					if(parentKeys.contains(parentObject) == false){
-						parentKeys.add(element.getParent());
+				if(flag == true){	
+					if(warningDst.equals(warning) || minorDst.equals(minor)||majorDst.equals(major) || mediumDst.equals(medium)){
+						Object parentObject = element.getParent();
+						if(parentKeys.contains(parentObject) == false){
+							parentKeys.add(element.getParent());
+						}
 					}
 				}
 			  }
@@ -89,7 +103,7 @@ public class DisseminateAlert extends ServerResource {
 				Entity alertUser= datastore.get(parent);
 				long messageIdLong = System.currentTimeMillis();
 				String messageId = messageIdLong+"";
-				String notificationMessage = "{Id:\""+messageId+"\",message:"+pushMessage+"\"}";
+				String notificationMessage = "{Id:\""+messageId+"\",message:\""+pushMessage+"\"}";
 				Message message = new Message.Builder().addData("msg",notificationMessage).delayWhileIdle(false).build();		
 				String phone = (String)alertUser.getProperty("phone");
 				String regId  = (String)alertUser.getProperty("regId");
@@ -99,13 +113,14 @@ public class DisseminateAlert extends ServerResource {
 			    history.setProperty("message", pushMessage);
 			    history.setProperty("phone", phone);
 			    history.setProperty("sent", "0");
+			    history.setProperty("timestamp", System.currentTimeMillis()+"");
 			    datastore.put(history);
 			    //ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(5);  
 			    //System.out.println(stpe.getCorePoolSize()); 
 			    //Runnable sms = new SMSThread(messageId, accessToken);
 			    String email = alertUser.getKey().getName();
 			    String payload = "{Id:\""+messageId+"\",email:\""+email+"\"}";
-			    queue.add(withUrl("/protect3/sms").payload(payload).countdownMillis(3000));
+			    queue.add(withUrl("/protect3/sms").payload(payload).countdownMillis(10000));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

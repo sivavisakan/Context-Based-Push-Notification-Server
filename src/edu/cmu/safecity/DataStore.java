@@ -20,7 +20,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class DataStore extends ServerResource {
-	@Post
+	@Post 
 	public Representation represent(Representation j) {
 		try {
 			String postData =  getRequest().getEntity().getText();
@@ -31,11 +31,12 @@ public class DataStore extends ServerResource {
 			Entity user = datastore.get(userKey);
 			String phone = myjson.getString(CommonUtilities.PHONE);
 			String regId = myjson.getString(CommonUtilities.REG_ID);
-			String imei = myjson.getString(CommonUtilities.IMEI);
+			String deviceId = myjson.getString("Id");
 			user.setProperty("regId", regId);
-			user.setProperty("imei", imei);
 			user.setProperty("phone", phone);
 			datastore.put(user);
+			Entity device = new Entity("device",deviceId,userKey);
+			datastore.put(device);
 			String areasStr = myjson.getString(CommonUtilities.AREA);
 			//JSONObject areaJSON = new JSONObject(areasStr);
 			JSONArray areas = new JSONArray(areasStr);			

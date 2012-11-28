@@ -5,7 +5,7 @@ package edu.cmu;
  *
  */
 public class LocationUtils {
-	
+
 	public static double distanceBetween(double srcLat, double srcLng, double dstLat, double dstLng) {
 		double earthRadius = 3963.1676;	// Miles
 		double dLat = Math.toRadians(dstLat - srcLat);
@@ -17,7 +17,7 @@ public class LocationUtils {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return earthRadius * c;
 	}
-	
+
 	public static boolean isOverlapping(double srcLat, double srcLng, double srcRad, double dstLat, double dstLng, double dstRad) {
 		// Two circles overlap each other only if the distance between  
 		// center of circles less than sum of radius of two circles

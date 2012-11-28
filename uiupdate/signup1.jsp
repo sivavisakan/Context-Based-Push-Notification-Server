@@ -1,6 +1,6 @@
 <%@include file="header.jsp" %>
-	<div id="index-logo"></div>
-    <form id="signup-form" class="my-form" method="post" action="/sign">
+    <form method="post" action="/sign">
+              <br/><br/><br/>
               <table id="signGroup">
               <div >
               <tr><td>Email</td> <td><input name="email" id="email" class="span2" type="text" ></td></tr>
