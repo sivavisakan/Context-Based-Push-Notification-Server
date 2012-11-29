@@ -6,8 +6,10 @@ public class CommonUtilities {
 	//public static final String SERVER_URL_BASE = "http://localhost:8888";
 	//public static final String SERVER_URL_BASE = "http://10.0.0.18:8080";
 	//public static final String SERVER_URL_BASE = "http://10.0.11.66:8888";
-	//public static final String SERVER_URL_BASE = "http://10.126.64.13:8888";
-	public static final String SERVER_URL_BASE = "http://10.126.64.18:8888";
+	//public static final String SERVER_URL_BASE = "http://10.126.64.18:8888";
+	public static final String SERVER_URL_BASE = "http://10.0.2.13:8888";
+	//public static final String SERVER_URL_BASE = "http://10.0.2.13:8888";
+	//public static final String SERVER_URL_BASE = "http://contextpush.appspot.com";
 	public final static String EMAIL = "email";
 	public final static String IMEI = "deviceId";
 	public final static String MESSAGE = "message";

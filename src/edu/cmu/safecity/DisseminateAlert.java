@@ -59,11 +59,11 @@ public class DisseminateAlert extends ServerResource {
 			 * Ask kristoffer how to do a post request with the oauth token and reach the protected resource
 			 */
 			
-		    Reference meRefProfile = new Reference(CommonUtilities.SERVER_URL_BASE+"/protect1/profile");
-		    meRefProfile.addQueryParameter(OAuthServerResource.OAUTH_TOKEN, "488f5d7811b8340bb6d00fbd980269fc8525f6283096b4b6f5dcf01c114cf78cee7fc79ea6b9c3d5");
-		    ClientResource meResourceProfile = new ClientResource(getContext(),meRefProfile);
-		    Representation meReprProfile = meResourceProfile.get();
-		    String profileData = meReprProfile.getText();
+//		    Reference meRefProfile = new Reference(CommonUtilities.SERVER_URL_BASE+"/protect1/profile");
+//		    meRefProfile.addQueryParameter(OAuthServerResource.OAUTH_TOKEN, "488f5d7811b8340bb6d00fbd980269fc8525f6283096b4b6f5dcf01c114cf78cee7fc79ea6b9c3d5");
+//		    ClientResource meResourceProfile = new ClientResource(getContext(),meRefProfile);
+//		    Representation meReprProfile = meResourceProfile.get();
+//		    String profileData = meReprProfile.getText();
 			String regIdTemp = "";
 			String pl = "{regId:\""+regIdTemp+"\",pushMessage:\""+pushMessage+"\"}";
 			//queue.add(withUrl("/protect1/push").param().payload(pl).countdownMillis(3000));

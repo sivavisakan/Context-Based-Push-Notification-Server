@@ -53,6 +53,7 @@ public class SMSResource extends ServerResource{
 		Key historyKey = KeyFactory.createKey(userKey,"History",messageId);
 		Entity history = datastore.get(historyKey);
 		history.setProperty("sent","1");
+		System.out.println("Acknowledgement for Push received");
 		datastore.put(history);
 		return new StringRepresentation("successfully receipt sent");
 		}catch(Exception e) {
@@ -72,6 +73,7 @@ public class SMSResource extends ServerResource{
 		Entity history = datastore.get(historyKey);
 		String check = (String) history.getProperty("sent");
 		if(check.equals("0")){
+		System.out.println("Sending SMS since there is no acknowledgement");
 		String to = (String) history.getProperty(CommonUtilities.PHONE); 		// Write The code to check the flag and send the SMS
 		String msg = (String)history.getProperty("message");	
 		// Get phone number and message to send SMS

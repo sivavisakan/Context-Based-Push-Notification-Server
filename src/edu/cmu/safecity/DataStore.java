@@ -31,7 +31,7 @@ public class DataStore extends ServerResource {
 			Entity user = datastore.get(userKey);
 			String phone = myjson.getString(CommonUtilities.PHONE);
 			String regId = myjson.getString(CommonUtilities.REG_ID);
-			String deviceId = myjson.getString("Id");
+			String deviceId = myjson.getString("deviceId");
 			user.setProperty("regId", regId);
 			user.setProperty("phone", phone);
 			datastore.put(user);

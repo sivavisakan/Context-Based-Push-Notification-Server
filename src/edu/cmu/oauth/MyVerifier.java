@@ -9,6 +9,7 @@ import org.restlet.security.SecretVerifier;
 public class MyVerifier extends SecretVerifier {
     @Override
     public int verify(String identifier, char[] secret) {
+    	System.out.println("The ID of the request "+identifier);
         if("bob".equals(identifier) && compare("alice".toCharArray(),
                 secret)){
             return RESULT_VALID;

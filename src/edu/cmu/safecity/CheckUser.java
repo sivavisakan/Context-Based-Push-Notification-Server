@@ -32,7 +32,7 @@ public class CheckUser extends ServerResource {
 			JSONObject myjson = new JSONObject(postData);
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			String userID = myjson.getString("username");
-			String deviceId = myjson.getString("Id");
+			String deviceId = myjson.getString("deviceId");
 			String email = userID+"@cmu.edu";
 			Key userKey = KeyFactory.createKey("User",email);
 			Entity user = datastore.get(userKey);
@@ -48,6 +48,7 @@ public class CheckUser extends ServerResource {
 					String storedDeviceId = deviceElement.getKey().getName();
 					if(storedDeviceId.equals(deviceId)){
 						devicePresent = true;
+						System.out.println("Device is a registered device");
 					}
 				}
 				Query s = new Query("History",userKey);
@@ -66,13 +67,20 @@ public class CheckUser extends ServerResource {
 					historyMap.put("timestamp", System.currentTimeMillis()+"");
 					jsonArray.put(new JSONObject(historyMap));
 				}
+				if(devicePresent)
+					System.out.println("Device is a registered device");
+				else 
+					System.out.println("It is a new device");
 				JSONObject userPresent = new JSONObject("{user:"+email+",history:"+jsonArray+",device:"+devicePresent+"}");
+				System.out.println("User already present , send the history of push notification");
 				return new JsonRepresentation(userPresent);
 			}
 		} catch (Exception e){
 			e.printStackTrace();
+			System.out.println("New user registration");
 			return new JsonRepresentation(noUser);
 		}
+		System.out.println("New user registration");
 		return new JsonRepresentation(noUser);
 	}
 }

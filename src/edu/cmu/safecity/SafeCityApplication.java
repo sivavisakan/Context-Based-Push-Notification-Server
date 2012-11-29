@@ -19,6 +19,7 @@ public class SafeCityApplication extends Application {
   public synchronized Restlet createInboundRoot() {
     Router router = new Router(getContext());
     //Define a proxy and resource that access your "local protected resource";
+    System.out.println("INcoming request to access protected resource" );
     List <Role> roles = new ArrayList <Role>();
     roles.add(new Role("push", null));
     roles.add(new Role("profile", null));

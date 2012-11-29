@@ -35,6 +35,8 @@
 		<servlet-name>oauth</servlet-name>
 		<url-pattern>/oauth/*</url-pattern>
 	</servlet-mapping>
+	
+	
 	<servlet>
 		<servlet-name>proxy</servlet-name>
 		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>

@@ -28,6 +28,7 @@ public class MyOauthServer extends Application {
       //Engine.setLogLevel(Level.FINE);
       Router root = new Router(getContext());
       //Challenge Authenticator
+      System.out.println("Incoming request ");
       ChallengeAuthenticator au = new ChallengeAuthenticator(getContext(),ChallengeScheme.HTTP_BASIC, "OAuth Test Server");
       au.setVerifier(new MyVerifier());
       au.setNext(AuthorizationServerResource.class);
@@ -47,7 +48,6 @@ public class MyOauthServer extends Application {
       //Object[] paramsC = {cassandraHost,cassandraPort,"OAuth2"};
       //ClientStoreFactory.setClientStoreImpl((Class<? extends ClientStore<?>>) MyClientStore.class);
       ClientStore clientStore = ClientStoreFactory.getInstance();
-      
       clientStore.createClient("1234567890", "secret1", CommonUtilities.SERVER_URL_BASE+"/proxy");
       return root;
   }
