@@ -1,15 +1,9 @@
 package edu.cmu.safecity;
-import edu.cmu.CommonUtilities;
-import java.net.URLDecoder;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
-import org.restlet.data.Form;
-import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -19,6 +13,8 @@ import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import edu.cmu.CommonUtilities;
+
 public class DataStore extends ServerResource {
 	@Post 
 	public Representation represent(Representation j) {
@@ -26,16 +22,20 @@ public class DataStore extends ServerResource {
 			String postData =  getRequest().getEntity().getText();
 			JSONObject myjson = new JSONObject(postData);
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-			String email = myjson.getString(CommonUtilities.EMAIL);
+			String email = myjson.getString("username")+"@cmu.edu";
 			Key userKey = KeyFactory.createKey("User",email);
 			Entity user = datastore.get(userKey);
 			String phone = myjson.getString(CommonUtilities.PHONE);
 			String regId = myjson.getString(CommonUtilities.REG_ID);
 			String deviceId = myjson.getString("deviceId");
-			user.setProperty("regId", regId);
-			user.setProperty("phone", phone);
+			user.setProperty("registered", "true");
 			datastore.put(user);
+			System.out.println("A new user has registered "+email);
 			Entity device = new Entity("device",deviceId,userKey);
+			device.setProperty("start", "00:00");
+			device.setProperty("end", "23:59");
+			device.setProperty("regId", regId);
+			device.setProperty("phone", phone);
 			datastore.put(device);
 			String areasStr = myjson.getString(CommonUtilities.AREA);
 			//JSONObject areaJSON = new JSONObject(areasStr);
@@ -57,13 +57,10 @@ public class DataStore extends ServerResource {
 		        areaEntity.setProperty("severity", severityStr);
 		        datastore.put(areaEntity);
 		       }
-		}
-		catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}catch (JSONException e){
+			System.err.println("Failed to parse JSON");
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

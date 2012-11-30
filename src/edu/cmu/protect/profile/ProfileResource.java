@@ -3,6 +3,11 @@
  */
 package edu.cmu.protect.profile;
 import java.util.logging.Logger;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
@@ -17,13 +22,15 @@ public class ProfileResource extends ServerResource{
 	public String BOB_DATA  = "{email:'bob@cmu.edu',phone:'4123223232',locaion:'Mountain View'}";
 	public String SIVA_DATA = "{email:'siva@cmu.edu',phone:'4129444959',locaion:'Palo Alto'}";
 	public String SUNG_DATA = "{email:'sung@cmu.edu',phone:'4129444959',locaion:'Palo Alto'}";
-    @Get public Representation getUserStatus() throws ResourceException{
+    @Get ("json") 
+    public Representation getUserStatus() throws ResourceException, JSONException{
         String id = getClientInfo().getUser().getIdentifier();
-        if(id.equals("siva")){
+    	System.out.println("The ID inside profile resource"+id);
+    	if("bob".equals(id.trim().toLowerCase())){
+    	 	return new JsonRepresentation(new JSONObject(BOB_DATA));
+         }
+    	if(id.equals("siva")){
         	return new StringRepresentation(SIVA_DATA);
-        }
-        if(id.equals("bob")){
-        	return new StringRepresentation(BOB_DATA);
         }
         if(id.equals("sung")){
         	return new StringRepresentation(SUNG_DATA);

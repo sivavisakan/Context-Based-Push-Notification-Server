@@ -48,7 +48,7 @@ public class SMSResource extends ServerResource{
 	try {
 		JSONObject myjson = s.getJsonObject();
 		String messageId = myjson.getString("Id");//getQueryValue("messageId");
-		String email = myjson.getString("email");
+		String email = myjson.getString("username")+"@cmu.edu";
 		Key userKey = KeyFactory.createKey("User",email);
 		Key historyKey = KeyFactory.createKey(userKey,"History",messageId);
 		Entity history = datastore.get(historyKey);
@@ -74,8 +74,21 @@ public class SMSResource extends ServerResource{
 		String check = (String) history.getProperty("sent");
 		if(check.equals("0")){
 		System.out.println("Sending SMS since there is no acknowledgement");
+		
+		
+		
 		String to = (String) history.getProperty(CommonUtilities.PHONE); 		// Write The code to check the flag and send the SMS
 		String msg = (String)history.getProperty("message");	
+		
+		
+		Entity historySMS = new Entity("History",System.currentTimeMillis(), userKey);
+	    history.setProperty("message", msg);
+	    history.setProperty("phone", to);
+	    history.setProperty("sent", "1");
+	    history.setProperty("type","SMS");
+	    history.setProperty("timestamp", System.currentTimeMillis()+"");
+	    datastore.put(historySMS);
+		
 		// Get phone number and message to send SMS
 		// Create SMS parameters using above info
 		Map<String, String> smsParams = new HashMap<String, String>();

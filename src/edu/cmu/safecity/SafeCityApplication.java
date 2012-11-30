@@ -27,6 +27,9 @@ public class SafeCityApplication extends Application {
     OAuthParameters params = new OAuthParameters("1234567890","secret1", CommonUtilities.SERVER_URL_BASE+"/oauth/",roles); // similar to give acccess to Images, videos ;  Scopes.toRoles("status")
     OAuthProxy local = new OAuthProxy(params,getContext());
     local.setNext(LocalResource.class);
+    router.attach("/policy",UpdatePolicies.class);
+    router.attach("/device",NewDevice.class);
+    router.attach("/area",AreaInfo.class);
     router.attach("/local",local);
     router.attach("/location",CurrentLocation.class);
     router.attach("/check",CheckUser.class);

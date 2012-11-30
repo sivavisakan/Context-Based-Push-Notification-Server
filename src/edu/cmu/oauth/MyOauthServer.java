@@ -28,7 +28,6 @@ public class MyOauthServer extends Application {
       //Engine.setLogLevel(Level.FINE);
       Router root = new Router(getContext());
       //Challenge Authenticator
-      System.out.println("Incoming request ");
       ChallengeAuthenticator au = new ChallengeAuthenticator(getContext(),ChallengeScheme.HTTP_BASIC, "OAuth Test Server");
       au.setVerifier(new MyVerifier());
       au.setNext(AuthorizationServerResource.class);

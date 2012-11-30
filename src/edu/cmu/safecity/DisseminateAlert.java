@@ -2,10 +2,13 @@ package edu.cmu.safecity;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static com.google.appengine.api.taskqueue.TaskOptions.Method;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,24 +104,27 @@ public class DisseminateAlert extends ServerResource {
 			  }
 			for(Key parent : parentKeys){
 				Entity alertUser= datastore.get(parent);
+				String email = alertUser.getKey().getName();
 				long messageIdLong = System.currentTimeMillis();
 				String messageId = messageIdLong+"";
 				String notificationMessage = "{Id:\""+messageId+"\",message:\""+pushMessage+"\"}";
 				Message message = new Message.Builder().addData("msg",notificationMessage).delayWhileIdle(false).build();		
-				String phone = (String)alertUser.getProperty("phone");
-				String regId  = (String)alertUser.getProperty("regId");
+				String[] contextIDs = getRegId(email);
+				String phone =  contextIDs[1];
+				String regId  = contextIDs[0];
+				System.out.println("The regID retrieved is "+regId);
 				Result result = sender.send(message, regId, 5);
 				//String messageId = result.getMessageId();
 				Entity history = new Entity("History",messageId, alertUser.getKey());
 			    history.setProperty("message", pushMessage);
 			    history.setProperty("phone", phone);
 			    history.setProperty("sent", "0");
+			    history.setProperty("type", "Push");
 			    history.setProperty("timestamp", System.currentTimeMillis()+"");
 			    datastore.put(history);
 			    //ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(5);  
 			    //System.out.println(stpe.getCorePoolSize()); 
 			    //Runnable sms = new SMSThread(messageId, accessToken);
-			    String email = alertUser.getKey().getName();
 			    String payload = "{Id:\""+messageId+"\",email:\""+email+"\"}";
 			    queue.add(withUrl("/protect3/sms").payload(payload).countdownMillis(10000));
 			}
@@ -126,6 +132,54 @@ public class DisseminateAlert extends ServerResource {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	/**
+	 * Finds the GCM ID && phone number of the device that is used currently
+	 * result[0] = GCM ID
+	 * result[1] = phone number
+	 * @param email
+	 * @return
+	 */
+	public String[] getRegId(String email){
+		Key userKey = KeyFactory.createKey("User",email);
+		String defaultId = null;
+		Query s = new Query("device",userKey);
+		PreparedQuery deviceQuery = datastore.prepare(s);
+		Iterable<Entity> device = deviceQuery.asIterable();
+		Iterator<Entity> deviceIterator = device.iterator();
+//		JSONArray jsonArray = new JSONArray();
+		String[] result = new String[2];
+		String[] defaultResult = new String[2];
+		while(deviceIterator.hasNext()){
+			Entity deviceElement = (Entity)deviceIterator.next();
+			String regId = (String) deviceElement.getProperty("regId");
+			String phone = (String) deviceElement.getProperty("phone");
+			
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("PST"));
+			cal.setTime(new Date());
+			int hours = cal.get(Calendar.HOUR_OF_DAY);
+			int minutes = cal.get(Calendar.MINUTE);
+			String start =  (String) deviceElement.getProperty("start");
+			String end =  (String) deviceElement.getProperty("end");
+			StringTokenizer starttime = new StringTokenizer(start,":");
+			int starthour = Integer.parseInt(starttime.nextToken());
+			int startMin = Integer.parseInt(starttime.nextToken());
+			StringTokenizer endTimeTokens = new StringTokenizer(end,":");
+			int endHour = Integer.parseInt(endTimeTokens.nextToken());
+			int endMin = Integer.parseInt(endTimeTokens.nextToken());
+			Time currentTime = new Time(hours, minutes, 0);
+			Time startTime = new Time(starthour, startMin, 0);
+			Time endTime = new Time(endHour, endMin,0);
+			if(currentTime.after(startTime) && currentTime.before(endTime)){
+				 result[0] = regId;
+				 result[1] = phone;
+				return result;
+			}
+			//defaultId = regId;
+			defaultResult[0] = regId;
+			defaultResult[1] = phone;
+		}
+		return defaultResult;
 	}
 class SMSThread implements Runnable {
 	String messageId;

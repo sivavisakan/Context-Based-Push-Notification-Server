@@ -16,6 +16,7 @@ import org.restlet.resource.ServerResource;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -47,6 +48,10 @@ public class CurrentLocation extends ServerResource{
 }
 		return new StringRepresentation("Location updated");
 }
+	/**
+	 * Retrieves the list of current location of the users and sends it to the AJAX call
+	 * @return
+	 */
 	@Get
 	public Representation getLocation(){
 		try {
@@ -56,8 +61,10 @@ public class CurrentLocation extends ServerResource{
 		Iterator<Entity> userIterator = user.iterator();
 		JSONArray jsonArray = new JSONArray();
 		while(userIterator.hasNext()){
+			String email = "";
+			try {
 			Entity userElement = (Entity)userIterator.next();
-			String email = userElement.getKey().getName();
+			email = userElement.getKey().getName();
 			Key locationKey = KeyFactory.createKey(userElement.getKey(),"location","current");
 			Entity location = datastore.get(locationKey);
 			GeoPt point = (GeoPt) location.getProperty("point");
@@ -68,9 +75,14 @@ public class CurrentLocation extends ServerResource{
 			locationMap.put("lon", lon);
 			locationMap.put("lat", lat);
 			jsonArray.put(new JSONObject(locationMap));
+			} catch (EntityNotFoundException e){
+				System.out.println(email+" Users current location not updated");
+			}
 		}
+		System.out.println("Sending location for the MAP.jsp");
 		return new JsonRepresentation(jsonArray);
-		} catch(Exception e){
+		} 
+		catch(Exception e){
 			e.printStackTrace();
 			return new StringRepresentation("Problem retrieving the location "+e.getMessage());
 		}
