@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -102,6 +103,24 @@ public class DisseminateAlert extends ServerResource {
 					}
 				}
 			  }
+			Query currentLocation = new Query("location");
+			PreparedQuery locationQuery = datastore.prepare(currentLocation);
+			Iterable<Entity> location = locationQuery.asIterable();
+			Iterator<Entity> locationIterator = location.iterator();
+			while(locationIterator.hasNext()){
+				Entity element = (Entity)locationIterator.next();
+				GeoPt point = (GeoPt) element.getProperty("point");
+				float dstLat = point.getLatitude();
+				float dstLon = point.getLongitude();
+				float dstRad = 5;
+				Boolean flag = LocationUtils.isOverlapping(srcLat, srclon, srcRad, dstLat, dstLon, dstRad);
+				if(flag == true){	
+						Object parentObject = element.getParent();
+						if(parentKeys.contains(parentObject) == false){
+							parentKeys.add(element.getParent());
+						}
+				}
+			}			
 			for(Key parent : parentKeys){
 				Entity alertUser= datastore.get(parent);
 				String email = alertUser.getKey().getName();
@@ -126,7 +145,7 @@ public class DisseminateAlert extends ServerResource {
 			    //System.out.println(stpe.getCorePoolSize()); 
 			    //Runnable sms = new SMSThread(messageId, accessToken);
 			    String payload = "{Id:\""+messageId+"\",email:\""+email+"\"}";
-			    queue.add(withUrl("/protect3/sms").payload(payload).countdownMillis(10000));
+			    queue.add(withUrl("/protect3/sms").payload(payload).countdownMillis(5000));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

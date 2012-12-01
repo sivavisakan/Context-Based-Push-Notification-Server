@@ -1,10 +1,11 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<link rel="stylesheet" href="css/bootstrap/css/bootstrap.css" type="text/css" media="screen"
-	charset="utf-8">
-<title>OAuth2 Authorization Server</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>OAuth2 Authorization Server</title>
+	<link rel="stylesheet" href="css/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="css/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
 <br/>
@@ -32,12 +33,34 @@
 		</#if>
 		<br/>
 		<input type="submit" name="action" value="Reject" class="btn btn-primary"/>
-		<input type="submit" name="action" value="Accept" class="btn btn-primary"/>
+		<input type="submit" name="action" value="Accept" class="btn btn-primary" id="btnAccept"/>
 		</form>
 		</aside>
 		<footer>
 			<p class="copyright">Copyright &copy; 2012 SafeCity Inc. All rights reserved.</p>
 		</footer>
 	</div>
+	
+	<div id="mapModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-body">
+			<img src="css/bootstrap/img/ajax-loader.gif" style="display:block; margin:0 auto 10px;" />
+			<p>Please wait for authentication</p>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$("#btnAccept").on("click", function() {
+				$("#mapModal").modal('show');
+			});
+			$('#mapModal').on('shown', function(e) {
+			    var modal = $(this);
+			    modal.css('margin-top', (modal.outerHeight() / 2) * -1)
+			         //.css('margin-left', (modal.outerWidth() / 2) * -1);
+			    		.css('margin-left', '70px');
+			    return this;
+			});
+		});
+	</script>
 </body>
 </html>

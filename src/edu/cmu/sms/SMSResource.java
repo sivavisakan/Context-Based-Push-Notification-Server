@@ -82,11 +82,11 @@ public class SMSResource extends ServerResource{
 		
 		
 		Entity historySMS = new Entity("History",System.currentTimeMillis(), userKey);
-	    history.setProperty("message", msg);
-	    history.setProperty("phone", to);
-	    history.setProperty("sent", "1");
-	    history.setProperty("type","SMS");
-	    history.setProperty("timestamp", System.currentTimeMillis()+"");
+	    historySMS.setProperty("message", msg);
+	    historySMS.setProperty("phone", to);
+	    historySMS.setProperty("sent", "1");
+	    historySMS.setProperty("type","SMS");
+	    historySMS.setProperty("timestamp", System.currentTimeMillis()+"");
 	    datastore.put(historySMS);
 		
 		// Get phone number and message to send SMS

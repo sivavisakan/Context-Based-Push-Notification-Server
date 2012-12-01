@@ -30,7 +30,7 @@ public class NewDevice extends ServerResource {
 				String email = userID+"@cmu.edu";
 				Key userKey = KeyFactory.createKey("User",email);
 				String phone = myjson.getString("phone");
-				String regId = myjson.getString("regId");
+				String regId = myjson.getString("regid");
 				
 				JSONArray devices =myjson.getJSONArray("data");
 				for(int i = 0 ; i <devices.length();i++){
