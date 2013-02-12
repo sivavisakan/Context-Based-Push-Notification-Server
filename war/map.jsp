@@ -157,6 +157,23 @@
 		</div>
 	</div>
 	
+	
+	
+	
+	 <div class="well span8">
+    <br/><br/>
+    <form action="/Exercise1">
+    <button class="button btn-info">Normal Exercise !</button>
+    </form>
+    <form action="/Console">
+    <button class="button btn-info"> Console Exercise </button>
+    </form>
+    <form action="/logout">
+    <button class="button btn-info">Logout</button>
+    </form>
+    <br/>
+    </div>
+	
 	<script>
 		var map;
 		var geocoder; // = new google.maps.Geocoder();

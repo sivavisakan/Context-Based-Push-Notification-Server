@@ -85,10 +85,10 @@ public class DisseminateAlert extends ServerResource {
 				Entity element = (Entity)userIterator.next();
 				String severityDst = (String)element.getProperty(CommonUtilities.SEV);
 				StringTokenizer severityTokens = new StringTokenizer(severityDst.substring(1, (severityDst.length()-1)), ",");
-				String warningDst = severityTokens.nextToken() ;
-				String minorDst =  severityTokens.nextToken();
-				String mediumDst =  severityTokens.nextToken();
-				String majorDst =  severityTokens.nextToken(); 
+				String warningDst = severityTokens.nextToken().equals("true") ? "true" : "none";
+				String minorDst =  severityTokens.nextToken().equals("true") ? "true" : "none";
+				String mediumDst =  severityTokens.nextToken().equals("true") ? "true" : "none";
+				String majorDst =  severityTokens.nextToken().equals("true") ? "true" : "none"; 
 				GeoPt point = (GeoPt) element.getProperty("point");
 				float dstLat = point.getLatitude();
 				float dstLon = point.getLongitude();

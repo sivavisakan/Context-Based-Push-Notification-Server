@@ -1,5 +1,7 @@
 package edu.cmu.sms;
 
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.TwilioRestException;
@@ -80,7 +84,6 @@ public class SMSResource extends ServerResource{
 		String to = (String) history.getProperty(CommonUtilities.PHONE); 		// Write The code to check the flag and send the SMS
 		String msg = (String)history.getProperty("message");	
 		
-		
 		Entity historySMS = new Entity("History",System.currentTimeMillis(), userKey);
 	    historySMS.setProperty("message", msg);
 	    historySMS.setProperty("phone", to);
@@ -88,7 +91,6 @@ public class SMSResource extends ServerResource{
 	    historySMS.setProperty("type","SMS");
 	    historySMS.setProperty("timestamp", System.currentTimeMillis()+"");
 	    datastore.put(historySMS);
-		
 		// Get phone number and message to send SMS
 		// Create SMS parameters using above info
 		Map<String, String> smsParams = new HashMap<String, String>();
@@ -99,7 +101,10 @@ public class SMSResource extends ServerResource{
 		smsParams.put("From", TWILIO_PHONE_NUMBER);
 		smsParams.put("Body", msg);
 		// Send SMS
+		Queue queue = QueueFactory.getDefaultQueue();
+		queue.add(withUrl("https://api.tropo.com/1.0/sessions").param("token", "16e5747c20aa7447b71f85114f8cda8eeffcc711e4493ec2870be522302f10e24fc033a299163583aa1f59d0").param("addresses", to).param("message_body", msg));
 		smsFactory.create(smsParams);
+		
 		return new StringRepresentation("sms sent");
 		}
 		}catch (Exception e) {
